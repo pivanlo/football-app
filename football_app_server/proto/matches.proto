@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message Matches {
+  message Match {
+    string date = 1;
+    string home_team = 2;
+    string away_team = 3;
+    string fthg = 4;
+    string ftag = 5;
+    string ftr = 8;
+    string hthg = 6;
+    string htag = 7;
+    string htr = 9;
+  }
+
+  repeated Match matches = 1;
+}

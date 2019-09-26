@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message Leagues {
+  message League {
+    string div = 1;
+    string season = 2;
+  }
+
+  repeated League leagues = 1;
+}

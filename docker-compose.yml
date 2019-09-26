@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  football-app-server-1:
+    build: ./football_app_server
+    image: football-app-server
+    ports:
+      - "${SERVER_1_PORT}:${SERVER_1_PORT}"
+    environment: 
+      - PORT=${SERVER_1_PORT}
+      - FOOTBALL_APP_DB=${FOOTBALL_APP_DB}
+      - FOOTBALL_APP_DB_HOSTNAME=${FOOTBALL_APP_DB_HOSTNAME}
+      - FOOTBALL_APP_DB_USERNAME=${FOOTBALL_APP_DB_USERNAME}
+      - FOOTBALL_APP_DB_PASSWORD=${FOOTBALL_APP_DB_PASSWORD}
+    networks:
+      football-app-network:
+        ipv4_address: ${SERVER_1_IP}
+
+  football-app-server-2:
+    image: football-app-server
+    ports:
+      - "${SERVER_2_PORT}:${SERVER_2_PORT}"
+    environment:
+      - PORT=${SERVER_2_PORT}
+      - FOOTBALL_APP_DB=${FOOTBALL_APP_DB}
+      - FOOTBALL_APP_DB_HOSTNAME=${FOOTBALL_APP_DB_HOSTNAME}
+      - FOOTBALL_APP_DB_USERNAME=${FOOTBALL_APP_DB_USERNAME}
+      - FOOTBALL_APP_DB_PASSWORD=${FOOTBALL_APP_DB_PASSWORD}
+    networks:
+      football-app-network:
+        ipv4_address: ${SERVER_2_IP}
+
+  football-app-server-3:
+    image: football-app-server
+    ports:
+      - "${SERVER_3_PORT}:${SERVER_3_PORT}"
+    environment:
+      - PORT=${SERVER_3_PORT}
+      - FOOTBALL_APP_DB=${FOOTBALL_APP_DB}
+      - FOOTBALL_APP_DB_HOSTNAME=${FOOTBALL_APP_DB_HOSTNAME}
+      - FOOTBALL_APP_DB_USERNAME=${FOOTBALL_APP_DB_USERNAME}
+      - FOOTBALL_APP_DB_PASSWORD=${FOOTBALL_APP_DB_PASSWORD}
+    networks:
+      football-app-network:
+        ipv4_address: ${SERVER_3_IP}
+
+  football-app-load-balancer:
+    build: ./football_app_load_balancer
+    image: football-app-load-balancer
+    ports:
+      - "80:80"
+    environment:
+      - SERVER_1_IP=${SERVER_1_IP}
+      - SERVER_2_IP=${SERVER_2_IP}
+      - SERVER_3_IP=${SERVER_3_IP}
+      - SERVER_1_PORT=${SERVER_1_PORT}
+      - SERVER_2_PORT=${SERVER_2_PORT}
+      - SERVER_3_PORT=${SERVER_3_PORT}
+    networks:
+      football-app-network:
+        ipv4_address: ${LOAD_BALANCER_IP}
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${FOOTBALL_APP_DB_PASSWORD}
+      POSTGRES_DB: ${FOOTBALL_APP_DB}
+    networks:
+      football-app-network:
+        ipv4_address: ${FOOTBALL_APP_DB_HOSTNAME}
+    ports:
+      - "5432:5432"
+
+  seeder:
+    image: football-app-server
+    environment:
+      - FOOTBALL_APP_DB=${FOOTBALL_APP_DB}
+      - FOOTBALL_APP_DB_HOSTNAME=${FOOTBALL_APP_DB_HOSTNAME}
+      - FOOTBALL_APP_DB_USERNAME=${FOOTBALL_APP_DB_USERNAME}
+      - FOOTBALL_APP_DB_PASSWORD=${FOOTBALL_APP_DB_PASSWORD}
+    networks:
+      football-app-network:
+        ipv4_address: ${SEEDER_IP}
+    command: mix run -e FootballAppServer.Application.start_seeder --no-halt
+
+networks:
+  football-app-network:
+    ipam:
+      config:
+        - subnet: ${NETWORK_SUBNET}
