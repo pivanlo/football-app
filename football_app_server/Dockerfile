@@ -2,8 +2,11 @@ FROM elixir:latest
 
 COPY . .
 
-# Install Hex
+# Install hex
 RUN mix local.hex --force
+
+# Install rebar
+RUN mix local.rebar --force
 
 # Get dependencies
 RUN mix deps.get
