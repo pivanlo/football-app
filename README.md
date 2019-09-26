@@ -25,7 +25,7 @@ The difference is that instead of running an HTTP server, this container will se
 
 ## API Documentation
 
-API documentation is available in `docs/api.md`.
+API documentation is available in [docs/api.md](https://github.com/pivanlo/football-app/blob/master/docs/api.md).
 
 ## Running the application
 
