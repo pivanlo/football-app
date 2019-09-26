@@ -5,7 +5,9 @@ COPY . .
 # Install Hex
 RUN mix local.hex --force
 
+# Get dependencies
+RUN mix deps.get
+
 RUN mix compile
 
-#CMD ["mix", "run", "--no-halt"]
-CMD ["elixir", "--sname", "hello", "--cookie", "monster", "-S", "mix", "run", "--no-halt"]
+CMD ["mix", "run", "--no-halt"]
