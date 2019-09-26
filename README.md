@@ -34,7 +34,7 @@ Make sure you have Docker and Docker Compose installed and operational.
 Move to the root directory and start the application with:
 
 ```
-docker-compose up -d mongo
+docker-compose up
 ```
 
 This command will start the 6 containers.
